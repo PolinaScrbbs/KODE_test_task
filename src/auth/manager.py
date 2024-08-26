@@ -8,7 +8,7 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .shemas import UserCreate
+from .schemas import UserCreate, UserRead
 from .models import User
 from ..database import get_async_session
 from ..config import settings
@@ -33,7 +33,7 @@ class UserManager(BaseUserManager[User, int]):
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def create(self, user_create: UserCreate, safe: bool = False, request: Optional[Request] = None) -> User:
+    async def create(self, user_create: UserCreate, safe: bool = False, request: Optional[Request] = None) -> UserRead:
         await self.validate_password(user_create.password, user_create)
 
         existing_user = await self.get_by_email(user_create.email)
@@ -46,7 +46,7 @@ class UserManager(BaseUserManager[User, int]):
 
         created_user = await self.user_db.create(user_dict)
         await self.on_after_register(created_user, request)
-        return created_user
+        return UserRead.model_validate(created_user)
 
 
 async def get_user_manager(session: AsyncSession = Depends(get_async_session)):

@@ -3,16 +3,14 @@ from fastapi import FastAPI
 
 from fastapi_users import FastAPIUsers
 
+from .base import fastapi_users
+
 from src.auth.manager import get_user_manager
 from src.auth.models import User
 
 from .auth.base import auth_backend
-from .auth.shemas import UserCreate, UserRead, UserUpdate
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from .auth.schemas import UserCreate, UserRead, UserUpdate
+from .notes.router import router as notes_router
 
 app = FastAPI(title="Notes")
 
@@ -39,6 +37,8 @@ app.include_router(
 #     prefix="/users",
 #     tags=["users"],
 # )
+
+app.include_router(notes_router, prefix="/api")
 
 if __name__ == "__main__":
     uvicorn.run(

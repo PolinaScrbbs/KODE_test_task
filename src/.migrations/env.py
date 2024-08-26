@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from alembic import context
 
 from src.config import settings
-from src.database import Base
+from src.notes.models import Base
 from src.auth.models import * #noqa
 
 config = context.config

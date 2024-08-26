@@ -14,6 +14,9 @@ class UserUpdate(BaseModel):
 
 class UserRead(BaseModel):
     id: int
-    email: EmailStr
+    email: str
     created_at: datetime
     updated_at: datetime
+
+    class Config:
+        from_attributes=True

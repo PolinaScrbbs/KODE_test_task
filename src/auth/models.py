@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Integer, String, DateTime, text
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,6 +28,8 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         server_default=text("TIMEZONE('utc', now())"),
         onupdate=text("TIMEZONE('utc', now())"),
     )
+
+    notes = relationship("Note", back_populates="creator", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return f"<User(id={self.id}, email='{self.email}')>"
