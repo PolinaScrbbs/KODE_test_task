@@ -13,5 +13,5 @@ class NoteRead(NoteBase):
     created_at: datetime
     updated_at: datetime
 
-    # class Config:
-    #     orm_mode = True
+class NoteUpdate(BaseModel):
+    content: str
