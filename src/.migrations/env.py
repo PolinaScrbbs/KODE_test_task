@@ -11,7 +11,7 @@ from alembic import context
 
 from src.config import settings
 from src.notes.models import Base
-from src.auth.models import * #noqa
+from src.auth.models import *  # noqa
 
 config = context.config
 
@@ -23,6 +23,7 @@ print(settings.DATABASE_URL)
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL + "?async_fallback=True")
 
 target_metadata = Base.metadata
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -62,9 +63,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

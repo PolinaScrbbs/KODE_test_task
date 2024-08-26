@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from datetime import datetime
 from ..auth.models import Base
 
+
 class Note(Base):
     __tablename__ = "notes"
 
@@ -10,8 +11,7 @@ class Note(Base):
     content: Mapped[str] = mapped_column(String(length=320), index=True, nullable=False)
     creator_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), 
-        server_default=text("TIMEZONE('utc', now())")
+        DateTime(timezone=True), server_default=text("TIMEZONE('utc', now())")
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

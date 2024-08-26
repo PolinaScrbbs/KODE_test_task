@@ -13,6 +13,7 @@ from .models import User
 from ..database import get_async_session
 from ..config import settings
 
+
 class UserManager(BaseUserManager[User, int]):
     reset_password_token_secret = settings.SECRET_AUTH
     verification_token_secret = settings.SECRET_AUTH
@@ -33,7 +34,12 @@ class UserManager(BaseUserManager[User, int]):
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def create(self, user_create: UserCreate, safe: bool = False, request: Optional[Request] = None) -> UserRead:
+    async def create(
+        self,
+        user_create: UserCreate,
+        safe: bool = False,
+        request: Optional[Request] = None,
+    ) -> UserRead:
         await self.validate_password(user_create.password, user_create)
 
         existing_user = await self.get_by_email(user_create.email)

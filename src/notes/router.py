@@ -15,23 +15,25 @@ from ..base import current_user
 
 router = APIRouter()
 
+
 @router.get("/notes/", response_model=List[NoteRead])
 async def get_user_notes(
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     result = await session.execute(select(Note).where(Note.creator_id == user.id))
     notes = result.scalars().all()
     return notes
 
+
 @router.post("/notes/", response_model=NoteRead, status_code=status.HTTP_201_CREATED)
 async def create_note(
     note_data: NoteCreate,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     spelling_errors = await check_spelling(note_data.content)
-    
+
     if spelling_errors:
         error_messages = [
             f"Ошибка в слове '{error['word']}'. Возможно, имелось в виду: {', '.join(error['s'])}"
@@ -39,7 +41,10 @@ async def create_note(
         ]
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"message": "Обнаружены орфографические ошибки.", "errors": error_messages}
+            detail={
+                "message": "Обнаружены орфографические ошибки.",
+                "errors": error_messages,
+            },
         )
 
     new_note = Note(
@@ -51,11 +56,12 @@ async def create_note(
     await session.refresh(new_note)
     return new_note
 
+
 @router.get("/notes/{note_id}", response_model=NoteRead)
 async def get_note_by_id(
     note_id: int,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     try:
         result = await session.execute(
@@ -63,15 +69,18 @@ async def get_note_by_id(
         )
         note = result.scalar_one()
     except NoResultFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
     return note
+
 
 @router.put("/notes/{note_id}", response_model=NoteRead)
 async def update_note(
     note_id: int,
     note_data: NoteUpdate,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     try:
         result = await session.execute(
@@ -79,10 +88,12 @@ async def update_note(
         )
         note = result.scalar_one()
     except NoResultFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
 
     spelling_errors = await check_spelling(note_data.content)
-    
+
     if spelling_errors:
         error_messages = [
             f"Ошибка в слове '{error['word']}'. Возможно, имелось в виду: {', '.join(error['s'])}"
@@ -90,7 +101,10 @@ async def update_note(
         ]
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"message": "Обнаружены орфографические ошибки.", "errors": error_messages}
+            detail={
+                "message": "Обнаружены орфографические ошибки.",
+                "errors": error_messages,
+            },
         )
 
     note.content = note_data.content
@@ -98,11 +112,12 @@ async def update_note(
     await session.refresh(note)
     return note
 
+
 @router.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_note(
     note_id: int,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     try:
         result = await session.execute(
@@ -110,7 +125,9 @@ async def delete_note(
         )
         note = result.scalar_one()
     except NoResultFound:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Note not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
 
     await session.delete(note)
     await session.commit()
