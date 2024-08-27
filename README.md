@@ -170,7 +170,6 @@ curl -X GET "http://localhost:8000/notes/{note_id}"
 curl -X PUT "http://localhost:8000/api/notes/{note_id}" \
      -H "Content-Type: application/json" \
      -d '{
-           "title": "Обновленный заголовок",
            "content": "Обновленное содержание"
          }'
 ```
@@ -183,7 +182,6 @@ curl -X PUT "http://localhost:8000/api/notes/{note_id}" \
 ```json
 {
   "id": "note123",
-  "title": "Обновленный заголовок",
   "content": "Обновленное содержание",
   "created_at": "2024-08-26T12:34:56Z",
   "updated_at": "2024-08-26T13:00:00Z"
@@ -192,8 +190,6 @@ curl -X PUT "http://localhost:8000/api/notes/{note_id}" \
 **Описание:**
 
 **id:** Уникальный идентификатор заметки.
-
-**title:** Обновленный заголовок заметки.
 
 **content:** Обновленное содержание заметки.
 
